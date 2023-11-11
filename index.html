@@ -1,0 +1,28 @@
+<!-- http://localhost/480-hospital-database/ -->
+
+<html>
+    <head>
+        <title>Log-In</title>
+        <link rel="stylesheet" href="index.css">
+    </head>
+
+    <div class="log_in_page">
+        <div class="tab_bar">
+            <h2>Welcome to the UI Health Database!</h2>
+        </div>
+
+        <div class="log_in_form">
+            <form action = "process-login.php" method = "post">
+                username: <input name = "username" type = "text"> <br><br>
+                password: <input name = "password" type = "password"> <br><br>
+                
+                <input type="radio" name="login_type" value="admin"> Admin <br><br>
+                <input type="radio" name="login_type" value="nurse"> Nurse <br><br>
+                <input type="radio" name="login_type" value="patient"> Patient <br><br>
+
+                <input type = "submit" value="Log In"> <br><br>
+            </form>
+            <a href="signup.html">New? Create an account</a>
+        </div>
+    </div>
+</html>

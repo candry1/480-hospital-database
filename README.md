@@ -1,9 +1,6 @@
 # 480-hospital-database
 
-- Login: You have three types of users: one admin, nurses, patients. In the login page users should
-enter their username/password and select their type (admin, nurse, patient)
-- Different users will have different functionalities:
-o Admin:
+Admin:
 1. Register a nurse: nurses cannot self-register. The admin should register them. In
 addition to the information above, every nurse is assigned a username and a
 passoword.
@@ -18,7 +15,9 @@ repository, admin updates the number of vaccines.
 scheduled for.
 7. View Patient info: view the information of a patient, the times they have
 scheduled for vaccination, and their vaccination history.
-o Nurse:
+
+
+Nurse:
 8. Update information: Nurses can update their address and phone#
 9. Schedule time: nurses can schedule for time slots that have less than 12 nurses
 scheduled for them.
@@ -26,7 +25,9 @@ scheduled for them.
 11. View Information: Nurses can view their information, including the times they
 have scheduled for.
 12. Vaccination: upon delivering a vaccine, nurses should record the vaccination
-o Patient:
+
+
+Patient:
 13. Register: Patients can register their information. In addition to what described
 above, a patient needs to pick a username and a password.
 14. Update Info: patients can update their information.
