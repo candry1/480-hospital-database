@@ -2,6 +2,7 @@
     <head>
         <title>Process Info</title>
     </head>
+    
     <body>
         <?php
         $name = $_POST["name"];
