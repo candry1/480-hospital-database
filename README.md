@@ -1,5 +1,11 @@
 # 480-hospital-database
 
+Admin login: 
+admin
+admin123
+
+
+
 Admin:
 1. Register a nurse: nurses cannot self-register. The admin should register them. In
 addition to the information above, every nurse is assigned a username and a
