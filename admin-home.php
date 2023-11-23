@@ -1,4 +1,4 @@
-<!-- http://localhost/480-hospital-database/admin-home.html -->
+<!-- http://localhost/480-hospital-database/admin-home.php -->
 
 <html>
     <head>
