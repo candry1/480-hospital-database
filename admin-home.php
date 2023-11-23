@@ -1,4 +1,4 @@
-<!-- http://localhost/480-hospital-database/admin-home.html -->
+<!-- http://localhost/480-hospital-database/admin-home.php -->
 
 <html>
     <head>
@@ -128,7 +128,7 @@
                         }
                     ?>
                 </form>
-                
+
                 <table>
                     <tr>
                         <th>Name</th>
@@ -253,10 +253,7 @@
                             $available_count = $_POST["available-count"];
                             $on_hold_count = $_POST["on-hold-count"];
                             $total_count = $_POST["total-count"];
-                            $description = $_POST["description"];
-
-                          
-
+                            $description = $_POST["description"];       
 
                             $stmt = $conn->prepare("INSERT INTO vaccine (vaccine_name, vaccine_company, num_dose, total_count, num_available, num_on_hold, text_desc) VALUES (?, ?, ?, ?, ?, ?, ?)");
                             $stmt->bind_param("ssiiiis", $vaccine_name, $company_name, $dosage_count, $total_count, $available_count, $on_hold_count, $description);
@@ -265,53 +262,46 @@
                             $stmt->close();
                         } elseif(isset($_POST['update-vaccine'])){
                             echo '<form method="post">';
-                            echo '<br><br><label for="updated-vaccine-name">Enter Vaccine Name:</label>';
+                            echo '<br><br><label for="updated-vaccine-name">Enter Vaccine Name(Case sensitive):</label>';
                             echo '<input type="text" name="updated-vaccine-name" id="input"><br><br>';
 
-                            echo '<input type="radio" name="update_type" value="Dosage Count"> Update Dosage Count <br><br>';
-                            echo '<input type="radio" name="update_type" value="Available Count"> Update Available Count <br><br>';
-                            echo '<input type="radio" name="update_type" value="On Hold Count"> Update On-Hold Count <br><br>';
-                            echo '<input type="radio" name="update_type" value="Total Count"> Update Total Count <br><br>';
-                            echo '<input type="radio" name="update_type" value="Description"> Update Description <br><br>';
+                            echo '<label for="updated-vaccine-company">Enter Vaccine Company(Case sensitive):</label>';
+                            echo '<input type="text" name="updated-vaccine-company" id="input"><br><br>';
+
+                            echo '<input type="radio" name="update_type" value="num_dose"> Update Dosage Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="num_available"> Update Available Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="num_on_hold"> Update On-Hold Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="total_count"> Update Total Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="text_desc"> Update Description <br><br>';
+
+                            echo '<label for="updated-value">Enter Updated Value:</label>';
+                            echo '<input type="text" name="updated-value" id="input"><br><br>';
 
                             echo '<input type="submit" name="update-vaccine-submit" id="input">';
                             echo "</form>";
 
                         } elseif(isset($_POST['update-vaccine-submit'])){
                             $vaccine_name = $_POST["updated-vaccine-name"];
-                            $update_column = $_POST['update-phone-number'];
+                            $vaccine_company = $_POST["updated-vaccine-company"];
+                            $update_column = $_POST['update_type'];
+                            $value = $_POST['updated-value'];
 
-                            // // TODO: add ability to update userame && password
-                            // $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = ?");
-                            // $stmt->bind_param("ii", $number, $eid);
 
-                            // if ($stmt->execute()) {
-                            //     echo "<br>Nurse with eid = $eid update successfully";
-                            // } else {
-                            //     echo "Error updating nurse: " . $stmt->error;
-                            // }
-                            // $stmt->close();
-                        // }elseif(isset($_POST['delete-nurse'])){
-                        //     echo "<br><br>";
+                            // TODO: add ability to update userame && password
+                            $stmt = $conn->prepare("UPDATE vaccine SET $update_column = ? WHERE vaccine_name like ? AND vaccine_company like ?");
+                            if($update_column == "text_desc"){
+                                $stmt->bind_param("sss", $value, $vaccine_name, $vaccine_company);
+                            } else{
+                                $stmt->bind_param("iss", $value, $vaccine_name, $vaccine_company);
 
-                        //     echo '<form method="post">';
-                        //     echo '<label for="delete-eid">Enter eid:</label>';
-                        //     echo '<input type="text" name="delete-eid" id="input">';
-                        //     echo '<input type="submit" name="delete-submit" id="input">';
-                        //     echo "</form>";
-                        // }elseif(isset($_POST['delete-submit'])){
-                        //     $eid = $_POST["delete-eid"];
+                            }
 
-                        //     $stmt = $conn->prepare("DELETE FROM nurse WHERE eid = ?");
-                        //     $stmt->bind_param("i", $eid);
-
-                        //     if ($stmt->execute()) {
-                        //         echo "<br>";
-                        //         echo "Nurse with eid = $eid deleted successfully";
-                        //     } else {
-                        //         echo "Error deleting rows: " . $stmt->error;
-                        //     }
-                        //     $stmt->close();
+                            if ($stmt->execute()) {
+                                echo "<br>$vaccine_name - $vaccine_company update successfully";
+                            } else {
+                                echo "Error updating vaccine: " . $stmt->error;
+                            }
+                            $stmt->close();
                         }
                     ?>
                 </form>
