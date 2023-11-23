@@ -67,66 +67,68 @@
                             $mi = $_POST["mi"];
                             $phone_num = $_POST["phone-num"];
 
-                            // TODO: adding the next valid ID isn't working!!
-                            $stmt = $conn->prepare("INSERT INTO nurse (eid, age, Fname, gender, Lname, MI, phone_number) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)");
-                            $stmt->bind_param("isissi", $age, $first, $gender, $last, $mi, $phone_num);
+                            $stmt_temp = "select MAX(eid) as max_eid from nurse";
+                            $result = $conn->query($stmt_temp);
+                            $row = $result->fetch_assoc();
+                            $eid = $row['max_eid'] + 1;
+
+
+                            $stmt = $conn->prepare("INSERT INTO nurse (eid, age, Fname, gender, Lname, MI, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                            $stmt->bind_param("iisissi", $eid, $age, $first, $gender, $last, $mi, $phone_num);
 
                             $stmt->execute();
                             $stmt->close();
                         } elseif(isset($_POST['update-nurse'])){
-                            // TODO: figure out what specifically they want to update!!
-
                             echo '<form method="post">';
                             echo '<br><br><label for="update-eid">Enter eid:</label>';
                             echo '<input type="text" name="update-eid" id="input"><br><br>';
 
-                            echo '<input type="radio" name="select" id="input" value="update-address">';
-                            echo '<label for="update-address">Update Address</label>';
+                            echo '<br><br><label for="update-phone-number">Enter new phone number:</label>';
+                            echo '<input type="text" name="update-phone-number" id="input"><br><br>';
 
-                            echo '<br><input type="radio" name="select" id="input" value="update-number">';
-                            echo '<label for="update-number">Update Phone Number</label>';
-
-                            echo '<br><input type="submit" name="update-submit" id="input">';
+                            echo '<input type="submit" name="update-submit" id="input">';
                             echo "</form>";
 
                         } elseif(isset($_POST['update-submit'])){
-                            // $eid = $_POST["update-eid"];
+                            $eid = $_POST["update-eid"];
+                            $number = $_POST['update-phone-number'];
 
                             // TODO: add ability to update userame && password
+                            $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = ?");
+                            $stmt->bind_param("ii", $number, $eid);
 
-                            // $stmt = $conn->prepare("DELETE FROM nurse WHERE eid IS ?");
-                            // $stmt->bind_param("s", $eid);
-
-                            // if ($stmt->execute()) {
-                            //     echo "Rows with eid = $eid deleted successfully";
-                            // } else {
-                            //     echo "Error deleting rows: " . $stmt->error;
-                            // }
-                            // $stmt->close();
+                            if ($stmt->execute()) {
+                                echo "<br>Nurse with eid = $eid update successfully";
+                            } else {
+                                echo "Error updating nurse: " . $stmt->error;
+                            }
+                            $stmt->close();
                         }elseif(isset($_POST['delete-nurse'])){
                             echo "<br><br>";
 
                             echo '<form method="post">';
                             echo '<label for="delete-eid">Enter eid:</label>';
                             echo '<input type="text" name="delete-eid" id="input">';
+
                             echo '<input type="submit" name="delete-submit" id="input">';
                             echo "</form>";
-                        }elseif(isset($_POST['delete-submit'])){
+                        } elseif(isset($_POST['delete-submit'])){
                             $eid = $_POST["delete-eid"];
 
-                            // TODO: make work with input we receieve
-                            $stmt = $conn->prepare("DELETE FROM nurse WHERE eid IS ?");
-                            $stmt->bind_param("s", $eid);
+                            $stmt = $conn->prepare("DELETE FROM nurse WHERE eid = ?");
+                            $stmt->bind_param("i", $eid);
 
                             if ($stmt->execute()) {
-                                echo "Rows with eid = $eid deleted successfully";
+                                echo "<br>";
+                                echo "Nurse with eid = $eid deleted successfully";
                             } else {
-                                echo "Error deleting rows: " . $stmt->error;
+                                echo "Error deleting nurse: " . $stmt->error;
                             }
                             $stmt->close();
                         }
                     ?>
                 </form>
+                
                 <table>
                     <tr>
                         <th>Name</th>
@@ -207,8 +209,113 @@
 
             <div class="vaccine-display">
                 <h2>Vaccines</h2>
-                <button name="add-vaccine">Add Vaccine</button>
-                <button name="update-vaccine">Update Vaccine</button>
+
+                <form method="POST" action="admin-home.php">
+                    <input type="submit" name="add-vaccine" value="Add Vaccine">
+                    <input type="submit" name="update-vaccine" value="Update Vaccine">
+
+                    <?php
+                        if(isset($_POST['add-vaccine'])){
+                            echo '<form method="post">';
+                            echo "<br><br>";
+
+                            echo '<label for="vaccine-name">Vaccine Name:</label>';
+                            echo '<input type="text" name="vaccine-name" id="input">';
+
+                            echo '<label for="company-name">  Company Name:</label>';
+                            echo '<input type="text" name="company-name" id="input">';
+
+                            echo "<br><br>";
+
+                            echo '<label for="dosage-count">Dosage count:</label>';
+                            echo '<input type="text" name="dosage-count" id="input">';
+
+                            echo '<label for="available-count">  Available Count:</label>';
+                            echo '<input type="text" name="available-count" id="input">';
+
+                            echo '<label for="on-hold-count">  On-Hold Count:</label>';
+                            echo '<input type="text" name="on-hold-count" id="input">';
+
+                            echo '<label for="total-count">  Total Count:</label>';
+                            echo '<input type="text" name="total-count" id="input">';
+                            
+                            echo "<br><br>";
+                            echo '<label for="description">  Description:</label>';
+                            echo '<input type="text" name="description" id="input">';
+
+                            echo '<button type="submit" name="add-vaccine-submit">Add Info</button>';
+                            echo '</form>';
+
+                        }else if(isset($_POST["add-vaccine-submit"])){
+                            $vaccine_name = $_POST["vaccine-name"];
+                            $company_name = $_POST["company-name"];
+                            $dosage_count = $_POST["dosage-count"];
+                            $available_count = $_POST["available-count"];
+                            $on_hold_count = $_POST["on-hold-count"];
+                            $total_count = $_POST["total-count"];
+                            $description = $_POST["description"];
+
+                          
+
+
+                            $stmt = $conn->prepare("INSERT INTO vaccine (vaccine_name, vaccine_company, num_dose, total_count, num_available, num_on_hold, text_desc) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                            $stmt->bind_param("ssiiiis", $vaccine_name, $company_name, $dosage_count, $total_count, $available_count, $on_hold_count, $description);
+
+                            $stmt->execute();
+                            $stmt->close();
+                        } elseif(isset($_POST['update-vaccine'])){
+                            echo '<form method="post">';
+                            echo '<br><br><label for="updated-vaccine-name">Enter Vaccine Name:</label>';
+                            echo '<input type="text" name="updated-vaccine-name" id="input"><br><br>';
+
+                            echo '<input type="radio" name="update_type" value="Dosage Count"> Update Dosage Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="Available Count"> Update Available Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="On Hold Count"> Update On-Hold Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="Total Count"> Update Total Count <br><br>';
+                            echo '<input type="radio" name="update_type" value="Description"> Update Description <br><br>';
+
+                            echo '<input type="submit" name="update-vaccine-submit" id="input">';
+                            echo "</form>";
+
+                        } elseif(isset($_POST['update-vaccine-submit'])){
+                            $vaccine_name = $_POST["updated-vaccine-name"];
+                            $update_column = $_POST['update-phone-number'];
+
+                            // // TODO: add ability to update userame && password
+                            // $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = ?");
+                            // $stmt->bind_param("ii", $number, $eid);
+
+                            // if ($stmt->execute()) {
+                            //     echo "<br>Nurse with eid = $eid update successfully";
+                            // } else {
+                            //     echo "Error updating nurse: " . $stmt->error;
+                            // }
+                            // $stmt->close();
+                        // }elseif(isset($_POST['delete-nurse'])){
+                        //     echo "<br><br>";
+
+                        //     echo '<form method="post">';
+                        //     echo '<label for="delete-eid">Enter eid:</label>';
+                        //     echo '<input type="text" name="delete-eid" id="input">';
+                        //     echo '<input type="submit" name="delete-submit" id="input">';
+                        //     echo "</form>";
+                        // }elseif(isset($_POST['delete-submit'])){
+                        //     $eid = $_POST["delete-eid"];
+
+                        //     $stmt = $conn->prepare("DELETE FROM nurse WHERE eid = ?");
+                        //     $stmt->bind_param("i", $eid);
+
+                        //     if ($stmt->execute()) {
+                        //         echo "<br>";
+                        //         echo "Nurse with eid = $eid deleted successfully";
+                        //     } else {
+                        //         echo "Error deleting rows: " . $stmt->error;
+                        //     }
+                        //     $stmt->close();
+                        }
+                    ?>
+                </form>
+
                 <table>
                     <tr>
                         <th>Vaccine Name</th>
