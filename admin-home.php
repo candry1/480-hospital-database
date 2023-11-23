@@ -8,7 +8,7 @@
             $servername = "localhost";
             $username = "root";
             $password = "";
-            $dbname = "final-project";
+            $dbname = "final-project-2";
 
             $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -56,6 +56,9 @@
                             echo '<label for="gender">  Gender(0=F, 1=M):</label>';
                             echo '<input type="text" name="gender" id="input">';
 
+                            echo '<label for="username">  Username:</label>';
+                            echo '<input type="text" name="username" id="input">';
+
                             echo '<button type="submit" name="add-submit">Add Info</button>';
                             echo '</form>';
 
@@ -66,6 +69,7 @@
                             $last = $_POST["last-name"];
                             $mi = $_POST["mi"];
                             $phone_num = $_POST["phone-num"];
+                            $user_name = $_POST["username"];
 
                             $stmt_temp = "select MAX(eid) as max_eid from nurse";
                             $result = $conn->query($stmt_temp);
@@ -73,8 +77,8 @@
                             $eid = $row['max_eid'] + 1;
 
 
-                            $stmt = $conn->prepare("INSERT INTO nurse (eid, age, Fname, gender, Lname, MI, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                            $stmt->bind_param("iisissi", $eid, $age, $first, $gender, $last, $mi, $phone_num);
+                            $stmt = $conn->prepare("INSERT INTO nurse (eid, age, Fname, gender, Lname, MI, phone_number, user_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                            $stmt->bind_param("iisissis", $eid, $age, $first, $gender, $last, $mi, $phone_num, $user_name);
 
                             $stmt->execute();
                             $stmt->close();
@@ -83,19 +87,31 @@
                             echo '<br><br><label for="update-eid">Enter eid:</label>';
                             echo '<input type="text" name="update-eid" id="input"><br><br>';
 
-                            echo '<br><br><label for="update-phone-number">Enter new phone number:</label>';
-                            echo '<input type="text" name="update-phone-number" id="input"><br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="Fname"> Update First Name <br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="MI"> Update Middle Initial <br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="Lname"> Update Last Name<br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="age"> Update Age<br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="phone_number"> Update Phone Number<br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="gender"> Update Gender<br><br>';
+
+                            echo '<br><br><label for="update-info">Enter Updated Info:</label>';
+                            echo '<input type="text" name="update-info" id="input"><br><br>';
 
                             echo '<input type="submit" name="update-submit" id="input">';
                             echo "</form>";
 
                         } elseif(isset($_POST['update-submit'])){
                             $eid = $_POST["update-eid"];
-                            $number = $_POST['update-phone-number'];
+                            $column = $_POST['update_type_nurse'];
+                            $value = $_POST['update-info'];
 
                             // TODO: add ability to update userame && password
-                            $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = ?");
-                            $stmt->bind_param("ii", $number, $eid);
+                            $stmt = $conn->prepare("UPDATE nurse SET $column = ? WHERE eid = ?");
+                            if($_POST['update_type_nurse'] == "age" || $_POST['update_type_nurse'] == "phone_number" || $_POST['update_type_nurse'] == "gender"){
+                                $stmt->bind_param("ii", $value, $eid);
+                            } else{
+                                $stmt->bind_param("si", $value, $eid);
+                            }
 
                             if ($stmt->execute()) {
                                 echo "<br>Nurse with eid = $eid update successfully";
@@ -136,6 +152,8 @@
                         <th>Sex(0=F, 1=M)</th>
                         <th>Phone Number</th>
                         <th>Age</th>
+                        <th>Address</th>
+                        <th>Username</th>
                     </tr>
                     <?php
                     $stmt = "SELECT * FROM nurse";
@@ -150,6 +168,8 @@
                                 <td>" . $row["gender"]. "</td>
                                 <td>" . $row["phone_number"]. "</td>
                                 <td>" . $row["age"]. "</td>
+                                <td>" . $row["street"].  ", " . $row["city"] . ", ". $row["state"]."</td>
+                                <td>" . $row["user_name"]. "</td>
                             </tr>";
                         }
                     } else {
