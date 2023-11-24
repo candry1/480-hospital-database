@@ -5,6 +5,8 @@
         <title>Nurse Home</title>
         <link rel="stylesheet" href="nurse-home.css">
         <?php
+            session_start();
+
             $servername = "localhost";
             $username = "root";
             $password = "";
@@ -15,6 +17,28 @@
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
+
+            $nurse_username = "";
+            $nurse_eid = -1;
+            $nurse_name = "";
+
+            if (isset($_SESSION['username'])) {
+                $nurse_username = $_SESSION['username'];
+                $stmt = $conn->prepare("SELECT eid, Fname FROM nurse WHERE user_name = ?");
+                $stmt->bind_param("s", $nurse_username);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    // print_r($result->fetch_assoc());
+                    $row = $result->fetch_assoc();
+                    $nurse_eid = $row["eid"];
+                    $nurse_name = $row["Fname"];
+                } else {
+                    echo "Nurse not found";
+                }
+            }
+
         ?>
     </head>
 
@@ -25,7 +49,7 @@
 
         <div class="display-options">
             <div class="nurse-display">
-                <!-- <h2>Nurses</h2> -->
+                <?php echo "<h1>Hello, $nurse_name!</h1>"?>
 
                 <form method="POST" action="nurse-home.php">
                     <input type="submit" name="update-info" value="Update Info"/>
@@ -51,11 +75,11 @@
                             $value = $_POST['updated-value'];
 
                             if($_POST['update_type_nurse'] == "phone_number"){
-                                $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = 10");
-                                $stmt->bind_param("i", $value);//, $eid);
+                                $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = ?");
+                                $stmt->bind_param("ii", $value, $nurse_eid);
                             } else{
-                                $stmt = $conn->prepare("UPDATE nurse SET $column = ? WHERE eid = 10");
-                                $stmt->bind_param("s", $value);//, $eid);
+                                $stmt = $conn->prepare("UPDATE nurse SET $column = ? WHERE eid = ?");
+                                $stmt->bind_param("si", $value, $nurse_eid);
                             }
 
                             if ($stmt->execute()) {
@@ -80,7 +104,7 @@
                         <th>Username</th>
                     </tr>
                     <?php
-                    $stmt = "SELECT * FROM nurse WHERE eid = 10";
+                    $stmt = "SELECT * FROM nurse WHERE eid = $nurse_eid";
                     $result = $conn->query($stmt);
 
                     if ($result->num_rows > 0) {
