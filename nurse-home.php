@@ -2,7 +2,6 @@
 
 <html>
     <head>
-        <title>Nurse Home</title>
         <link rel="stylesheet" href="nurse-home.css">
         <?php
             session_start();
@@ -40,16 +39,19 @@
             }
 
         ?>
+        <?php echo "<title>$nurse_name's Home Page</title>"?>
+
+
     </head>
 
     <div class="nurse-home-page">
         <div class="tab-bar">
-            <h2>Welcome to your Homepage!</h2><br>
+            <?php echo "<h2>Welcome, $nurse_name!</h2>"?>
+
         </div>
 
         <div class="display-options">
             <div class="nurse-display">
-                <?php echo "<h1>Hello, $nurse_name!</h1>"?>
 
                 <form method="POST" action="nurse-home.php">
                     <input type="submit" name="update-info" value="Update Info"/>
