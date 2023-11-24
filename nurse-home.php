@@ -34,24 +34,36 @@
                         if(isset($_POST['update-info'])){
                             echo '<form method="post">';
 
-                            echo '<br><br><label for="update-phone-number">Enter new phone number:</label>';
-                            echo '<input type="text" name="update-phone-number" id="input"><br><br>';
+                            echo '<br><br><input type="radio" name="update_type_nurse" value="phone_number"> Update Phone Number<br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="street"> Update Address<br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="city"> Update City<br><br>';
+                            echo '<input type="radio" name="update_type_nurse" value="state"> Update State<br><br>';
+
+                            
+                            echo '<label for="updated-value">Enter Updated Information:</label>';
+                            echo '<input type="text" name="updated-value" id="input"><br><br>';
 
                             echo '<input type="submit" name="update-submit" id="input">';
                             echo "</form>";
 
                         } else if(isset($_POST['update-submit'])){
-                            $number = $_POST['update-phone-number'];
+                            $column = $_POST['update_type_nurse'];
+                            $value = $_POST['updated-value'];
 
-                            // TODO: add ability to update userame && password
-                            $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = 10");
-                            $stmt->bind_param("i", $number);
+                            if($_POST['update_type_nurse'] == "phone_number"){
+                                $stmt = $conn->prepare("UPDATE nurse SET phone_number = ? WHERE eid = 10");
+                                $stmt->bind_param("i", $value);//, $eid);
+                            } else{
+                                $stmt = $conn->prepare("UPDATE nurse SET $column = ? WHERE eid = 10");
+                                $stmt->bind_param("s", $value);//, $eid);
+                            }
 
                             if ($stmt->execute()) {
-                                echo "<br>Updated successfully";
+                                echo "<br>Update successfull!";
                             } else {
-                                echo "Error updating nurse: " . $stmt->error;
+                                echo "Error updating info: " . $stmt->error;
                             }
+
                             $stmt->close();
                         }
                     ?>
@@ -64,6 +76,8 @@
                         <th>Sex(0=F, 1=M)</th>
                         <th>Phone Number</th>
                         <th>Age</th>
+                        <th>Address</th>
+                        <th>Username</th>
                     </tr>
                     <?php
                     $stmt = "SELECT * FROM nurse WHERE eid = 10";
@@ -78,6 +92,8 @@
                                 <td>" . $row["gender"]. "</td>
                                 <td>" . $row["phone_number"]. "</td>
                                 <td>" . $row["age"]. "</td>
+                                <td>" . $row["street"].  ", " . $row["city"] . ", ". $row["state"]."</td>
+                                <td>" . $row["user_name"]. "</td>
                             </tr>";
                         }
                     } else {
