@@ -3,14 +3,43 @@
 <html>
     <body>
         <?php
-        //if they enter "admin" "admin123", send them to admin page!
-        if($_POST["username"] == "admin" && $_POST["password"] == "admin123" && $_POST["login_type"] == "admin"){
-            header("Location: admin-home.php");
-        } else if($_POST["username"] == "nurse" && $_POST["password"] == "nurse123" && $_POST["login_type"] == "nurse"){
-            header("Location: nurse-home.php");
-        }else{
-            header("Location: index.html");
-        }
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "final-project-2";
+
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            $user_name = $_POST["username"];
+            $stmt = $conn->prepare("SELECT user_name, pass_word, user_type FROM login_table WHERE user_name = ?");
+            $stmt->bind_param("s", $user_name);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                if($row["pass_word"] == $_POST["password"] && $_POST["login_type"] == $row["user_type"]) {
+                    if($_POST["login_type"] == "3"){
+                        header("Location: admin-home.php");
+                    } else if($_POST["login_type"] == "2"){
+                        header("Location: nurse-home.php");
+                    } 
+                    // else if($_POST["login_type"] == "1"){
+                    // }
+                } else{
+                    // TODO: print "incorrect password or user type"
+                    header("Location: index.html");
+                }
+            } else {
+                echo "0 results";
+            }
+
+            $stmt->close();
+            $conn->close();
         ?> 
     </body>
 </html>
