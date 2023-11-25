@@ -26,6 +26,13 @@
                     if($_POST["login_type"] == "3"){
                         header("Location: admin-home.php");
                     } else if($_POST["login_type"] == "2"){
+                        //try it out
+                        session_start();
+
+                        $username = $user_name;
+
+                        $_SESSION['username'] = $username;
+
                         header("Location: nurse-home.php");
                     } 
                      else if($_POST["login_type"] == "1"){
