@@ -28,8 +28,10 @@
                     } else if($_POST["login_type"] == "2"){
                         header("Location: nurse-home.php");
                     } 
-                    // else if($_POST["login_type"] == "1"){
-                    // }
+                     else if($_POST["login_type"] == "1"){
+
+                        header("Location: patient-files/patient-home.html");
+                    }
                 } else{
                     // TODO: print "incorrect password or user type"
                     header("Location: index.html");

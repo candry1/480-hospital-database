@@ -30,6 +30,9 @@
         if ($stmt->execute()) {
             echo "<br>";
             echo "Sign-up of = $user_name is successfull, please log in!";
+            echo "You will be redirected to the log in page ..."; 
+            sleep(20); 
+            header("Location: index.html");
             // TODO: add header() here to redirect them. ** doing this wont 
             // show the "success" message
         } else {
