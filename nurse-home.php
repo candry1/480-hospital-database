@@ -29,7 +29,6 @@
                 $result = $stmt->get_result();
 
                 if ($result->num_rows > 0) {
-                    // print_r($result->fetch_assoc());
                     $row = $result->fetch_assoc();
                     $nurse_eid = $row["eid"];
                     $nurse_name = $row["Fname"];
@@ -41,12 +40,11 @@
         ?>
         <?php echo "<title>$nurse_name's Home Page</title>"?>
 
-
     </head>
 
     <div class="nurse-home-page">
         <div class="tab-bar">
-            <?php echo "<h2>Welcome, $nurse_name!</h2>"?>
+            <?php echo "<h1>Welcome, $nurse_name!</h1>"?>
 
         </div>
 
@@ -130,6 +128,68 @@
                 <br>
                 <br>
                 <br>
+            </div>
+
+            <div class="scheduling-display">
+                <h2>Full Schedule</h2>
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Timeslot</th>
+                        <th>Number of Nurses Available</th>
+                        <th>Number of Patients Scheuled</th>
+                    </tr>
+                    <?php
+                    $stmt = "SELECT * FROM schedule";
+                    $result = $conn->query($stmt);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo "
+                            <tr>
+                                <td>" . $row["the_date"]. "</td>
+                                <td>" . $row["time_slot"]. "</td>
+                                <td>" . $row["num_of_nurses"]. "</td>
+                                <td>" . $row["num_of_patients"]. "</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "0 results";
+                    }
+                    ?>
+                </table>
+            </div>
+
+            <div class="scheduling-display">
+                <h2>Your Availablility</h2>
+
+                <form method="POST" action="nurse-availability-scheduling.php">
+                    <input type="submit" name="add-availability" value="Add Your Availablility"/>
+                    <input type="submit" name="cancel-availability" value="Cancel Your Timeslot"/>
+                </form>
+
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Timeslot</th>
+                    </tr>
+                    <?php
+                    $stmt = "SELECT * FROM nurse_availability WHERE eid = $nurse_eid";
+                    $result = $conn->query($stmt);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo "
+                            <tr>
+                                <td>" . $row["the_date"]. "</td>
+                                <td>" . $row["time_slot"]. "</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "0 results";
+                    }
+                    ?>
+                </table>
             </div>
         </div>
     </div>
