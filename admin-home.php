@@ -311,6 +311,7 @@
                         <th>Address</th>
                         <th>Occupation Class</th>
                         <th>Medical History</th>
+                        <th>Username</th>
                     </tr>
                     <?php
                     $stmt = "SELECT * FROM patient";
@@ -329,6 +330,7 @@
                                 <td>" . $row["building_number"]. " " . $row["direction"]. " " . $row["street_name"]. ", " . $row["city"].  ", " . $row["state_initials"]. ", " . $row["zip_code"].  "</td>
                                 <td>" . $row["occupation_class"]. "</td>
                                 <td>" . $row["medical_history"]. "</td>
+                                <td>" . $row["user_name"]. "</td>
                             </tr>";
                         }
                     } else {
@@ -338,6 +340,52 @@
                 </table>
                 <br>
                 <br>
+
+                <h2>Patient Vaccine Schedules</h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>SSN</th>
+                        <th>Date</th>
+                        <th>Time Slot</th>
+                        <th>Vaccine</th>
+                        <th>Dosage Number</th>
+                    </tr>
+                    <?php
+                    $stmt = "SELECT * FROM vaccine_record";
+                    $result = $conn->query($stmt);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            $stmt_password = $conn->prepare("SELECT Fname, Lname FROM patient where ssn = ?");
+                            $stmt_password->bind_param("i", $row["patient_SSN"]);
+                            $stmt_password->execute();
+                            $result_password = $stmt_password->get_result();
+                            $password_placement = "";
+                    
+                            if ($result_password->num_rows > 0) {
+                                $password_row = $result_password->fetch_assoc();
+
+                                $first_name = $password_row["Fname"];
+                                $last_name = $password_row["Lname"];
+                            }
+
+                            echo "
+                            <tr>
+                                <td>" . $first_name. " " .$last_name. "</td>
+                                <td>" . $row["patient_SSN"]. "</td>
+                                <td>" . $row["the_date"].  "</td>
+                                <td>" . $row["time_slot"]. "</td>
+                                <td>" . $row["vaccine_name"]. "</td>
+                                <td>" . $row["dose_num"]. "</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "0 results";
+                    }
+                    ?>
+                </table>
+
                 <br>
             </div>
 
