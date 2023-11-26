@@ -21,6 +21,7 @@
     <div class="admin-home-page">
         <div class="tab-bar">
             <h2>Welcome to the Admin Homepage!</h2><br>
+            <a href='http://localhost/480-hospital-database'>Log Out</a>
         </div>
 
         <div class="display-options">
@@ -214,6 +215,7 @@
                         <th>Age</th>
                         <th>Address</th>
                         <th>Username</th>
+                        <th>Password</th>
                     </tr>
                     <?php
                     $stmt = "SELECT * FROM nurse";
@@ -221,6 +223,17 @@
 
                     if ($result->num_rows > 0) {
                         while($row = $result->fetch_assoc()) {
+                            $stmt_password = $conn->prepare("SELECT pass_word FROM login_table where user_name = ?");
+                            $stmt_password->bind_param("s", $row["user_name"]);
+                            $stmt_password->execute();
+                            $result_password = $stmt_password->get_result();
+                            $password_placement = "";
+                    
+                            if ($result_password->num_rows > 0) {
+                                $password_row = $result_password->fetch_assoc();
+                                $password_placement = $password_row["pass_word"];
+                            }
+
                             echo "
                             <tr>
                                 <td>" . $row["Fname"]. " " . $row["MI"]. ". " . $row["Lname"]. "</td>
@@ -230,6 +243,8 @@
                                 <td>" . $row["age"]. "</td>
                                 <td>" . $row["street"].  ", " . $row["city"] . ", ". $row["state"]."</td>
                                 <td>" . $row["user_name"]. "</td>
+                                <td>" . $password_placement . "</td>
+
                             </tr>";
                         }
                     } else {
@@ -239,7 +254,47 @@
                 </table>
                 <br>
                 <br>
-                <br>
+
+                <h2>Nurse Availability Schedule</h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>EID</th>
+                        <th>Date</th>
+                        <th>Time Slot</th>
+                    </tr>
+                    <?php
+                    $stmt = "SELECT * FROM nurse_availability";
+                    $result = $conn->query($stmt);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            $stmt_password = $conn->prepare("SELECT Fname, Lname FROM nurse where eid = ?");
+                            $stmt_password->bind_param("i", $row["eid"]);
+                            $stmt_password->execute();
+                            $result_password = $stmt_password->get_result();
+                            $password_placement = "";
+                    
+                            if ($result_password->num_rows > 0) {
+                                $password_row = $result_password->fetch_assoc();
+
+                                $first_name = $password_row["Fname"];
+                                $last_name = $password_row["Lname"];
+                            }
+
+                            echo "
+                            <tr>
+                                <td>" . $first_name. " " . $last_name. "</td>
+                                <td>" . $row["eid"]. "</td>
+                                <td>" . $row["the_date"].  "</td>
+                                <td>" . $row["time_slot"]. "</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "0 results";
+                    }
+                    ?>
+                </table>
             </div>
 
 

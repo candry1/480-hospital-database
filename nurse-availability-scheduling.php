@@ -70,7 +70,7 @@
                 $stmt->execute();
                 $result = $stmt->get_result();
             
-                echo '<br><br><h2>Available Timeslots</h2>';
+                echo '<h2>Available Timeslots</h2>';
                 echo '<p>Choose a time to schedule yourself for. If you need more than one, redo the form:</p>';
             
                 if ($result->num_rows > 0) {

@@ -45,6 +45,7 @@
     <div class="nurse-home-page">
         <div class="tab-bar">
             <?php echo "<h1>Welcome, $nurse_name!</h1>"?>
+            <a href='http://localhost/480-hospital-database'>Log Out</a>
 
         </div>
 
