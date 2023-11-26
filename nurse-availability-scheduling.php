@@ -64,8 +64,9 @@
             }else if(isset($_POST['availability-date-submit'])){
                 $date = $_POST['available_date_option'];
             
-                $stmt = $conn->prepare("SELECT time_slot FROM schedule WHERE the_date = ? AND num_of_nurses < 12");
-                $stmt->bind_param("s", $date);
+                // and where they're not already signed up for it
+                $stmt = $conn->prepare("SELECT time_slot FROM schedule WHERE the_date = ? AND num_of_nurses < 12 and time_slot not in (SELECT time_slot from nurse_availability where the_date = ? and eid = ?)");
+                $stmt->bind_param("ssi", $date, $date, $nurse_eid);
                 $stmt->execute();
                 $result = $stmt->get_result();
             
