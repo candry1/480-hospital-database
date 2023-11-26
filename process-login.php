@@ -3,6 +3,9 @@
 <html>
     <body>
         <?php
+        
+
+
             $servername = "localhost";
             $username = "root";
             $password = "";
@@ -36,8 +39,11 @@
                         header("Location: nurse-home.php");
                     } 
                      else if($_POST["login_type"] == "1"){
+                        session_start();
+                        $username = $user_name;
+                        $_SESSION['username'] = $username;
 
-                        header("Location: patient-files/patient-home.html");
+                        header("Location: patient-files/patient-home.php");
                     }
                 } else{
                     // TODO: print "incorrect password or user type"
