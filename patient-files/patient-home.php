@@ -150,11 +150,11 @@
                             echo "
                             <tr>
                                 <td>" . $row["Fname"]. " " . $row["MI"]. ". " . $row["Lname"]. "</td>
-                                <td>" . $row["eid"]. "</td>
+                                <td>" . $row["ssn"]. "</td>
                                 <td>" . $row["gender"]. "</td>
                                 <td>" . $row["phone_number"]. "</td>
                                 <td>" . $row["age"]. "</td>
-                                <td>" . $row["street"].  ", " . $row["city"] . ", ". $row["state"]."</td>
+                                <td>" . $row["building_number"]. " " .$row["direction"]. " " .$row["street_name"].", " . $row["city"] . ", ". $row["zip_code"]. ", ". $row["state_initials"]."</td>
                                 <td>" . $row["user_name"]. "</td>
                             </tr>";
                         }
