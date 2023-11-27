@@ -93,6 +93,9 @@
                         }
                     ?>
                 </form>
+                <form method="POST" action="vaccination_processing.php">
+                    <input type="submit" name="do-vaccination" value="Complete a Vaccination"/>
+                </form>
 
                 <table>
                     <tr>

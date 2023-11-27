@@ -20,13 +20,49 @@
 
     <div class="admin-home-page">
         <div class="tab-bar">
-            <h2>Welcome to the Admin Homepage!</h2><br>
+            <h2>Welcome to the Admin Homepage!</h2>
             <a href='http://localhost/480-hospital-database'>Log Out</a>
         </div>
 
         <div class="display-options">
+            <div class="full-scheduling-display">
+                <br>
+                <br>
+                <h2>Full Schedule</h2>
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Timeslot</th>
+                        <th>Number of Nurses Available</th>
+                        <th>Number of Patients Scheuled</th>
+                    </tr>
+                    <?php
+                    $stmt = "SELECT * FROM schedule";
+                    $result = $conn->query($stmt);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo "
+                            <tr>
+                                <td>" . $row["the_date"]. "</td>
+                                <td>" . $row["time_slot"]. "</td>
+                                <td>" . $row["num_of_nurses"]. "</td>
+                                <td>" . $row["num_of_patients"]. "</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "0 results";
+                    }
+                    ?>
+                </table>
+                <br>
+                <br>
+            </div>
+
             <div class="nurse-display">
-                <h2>Nurses</h2>
+                <br>
+                <br>
+                <h2>All Nurses</h2>
                 <form method="POST" action="admin-home.php">
                     <input type="submit" name="register-nurse" value="Register Nurse"/>
                     <input type="submit" name="update-nurse" value="Update Nurse"/>
@@ -255,6 +291,7 @@
                 <br>
                 <br>
 
+
                 <h2>Nurse Availability Schedule</h2>
                 <table>
                     <tr>
@@ -295,8 +332,9 @@
                     }
                     ?>
                 </table>
+                <br>
+                <br>
             </div>
-
 
             <div class="patient-display">
                 <h2>Patients</h2>
@@ -386,6 +424,7 @@
                     ?>
                 </table>
 
+                <br>
                 <br>
             </div>
 
