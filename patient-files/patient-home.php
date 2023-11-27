@@ -47,7 +47,115 @@
 
     <body >
 
-         <p> Welcome to the Patient Page! </p>
+    <div class="patient-home-page">
+        <div class="tab-bar">
+            <?php echo "<h1>Welcome, $patient_name!</h1>"?>
+            <a href='http://localhost/480-hospital-database'>Log Out</a>
+
+        </div>
+
+        <div class="display-options">
+            <div class="patient-display">
+
+                <form method="POST" action="patient-home.php">
+                    <input type="submit" name="register-info" value="register-info"/>
+
+                    <?php
+                        if(isset($_POST['register-info'])){
+                           
+                            echo '<form method="post">';
+                            echo "<br><br>";
+
+                            echo '<label for="first-name">First Name:</label>';
+                            echo '<input type="text" name="first-name" id="input">';
+
+                            echo '<label for="mi">  MI:</label>';
+                            echo '<input type="text" name="mi" id="input">';
+
+                            echo '<label for="last-name">  Last Name:</label>';
+                            echo '<input type="text" name="last-name" id="input">';
+
+                            echo "<br><br>";
+
+                            echo '<label for="phone-num">Phone Number(no characters):</label>';
+                            echo '<input type="text" name="phone-num" id="input">';
+
+                            echo '<label for="age">  Age:</label>';
+                            echo '<input type="text" name="age" id="input">';
+
+                            echo '<label for="gender">  Gender(0=F, 1=M):</label>';
+                            echo '<input type="text" name="gender" id="input">';
+
+                            echo '<br><br><label for="street">  Address:</label>';
+                            echo '<input type="text" name="street" id="input">';
+
+                            echo '<label for="city">  City:</label>';
+                            echo '<input type="text" name="city" id="input">';
+
+                            echo '<label for="state">  State Initials:</label>';
+                            echo '<input type="text" name="state" id="input">';
+
+                            echo '<br><br><label for="username">  Username:</label>';
+                            echo '<input type="text" name="username" id="input">';
+
+                            echo '<label for="password">  Password:</label>';
+                            echo '<input type="password" name="password" id="input">';
+
+                            echo '<button type="submit" name="add-submit">Add Info</button>';
+                            echo '</form>';
+                        }
+
+                        
+
+                        if ($stmt->execute()) {
+                                echo "<br>Registration  successfull!";
+                            } else {
+                                echo "Error updating info: " . $stmt->error;
+                            }
+
+                            $stmt->close();
+                    
+                    ?>
+                </form>
+
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>SSN</th>
+                        <th>Sex(0=F, 1=M)</th>
+                        <th>Phone Number</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                        <th>Username</th>
+                    </tr>
+                    <?php
+                    $stmt = "SELECT * FROM patient WHERE ssn = $patient_eid";
+                    $result = $conn->query($stmt);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo "
+                            <tr>
+                                <td>" . $row["Fname"]. " " . $row["MI"]. ". " . $row["Lname"]. "</td>
+                                <td>" . $row["eid"]. "</td>
+                                <td>" . $row["gender"]. "</td>
+                                <td>" . $row["phone_number"]. "</td>
+                                <td>" . $row["age"]. "</td>
+                                <td>" . $row["street"].  ", " . $row["city"] . ", ". $row["state"]."</td>
+                                <td>" . $row["user_name"]. "</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "0 results";
+                    }
+                    ?>
+                </table>
+                <br>
+                <br>
+                <br>
+            </div>
+
+
 
 
 
