@@ -35,7 +35,8 @@
                     $patient_eid = $row["ssn"];
                     $patient_name = $row["Fname"];
                 } else {
-                    echo "The user is not found, email the admin for more support";
+                    header("Location: signup_profile_patient.html");
+
                 }
             }
 
@@ -87,10 +88,6 @@
                             echo '<input type="text" name="gender" id="input">';
 
                             echo "<br><br>";
-
-
-
-
 
 
                             echo '<label for="Building Number"> Building Number:</label>';
