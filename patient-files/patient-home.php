@@ -35,7 +35,8 @@
                     $patient_eid = $row["ssn"];
                     $patient_name = $row["Fname"];
                 } else {
-                    echo "The user is not found, email the admin for more support";
+                    header("Location: signup_profile_patient.html");
+
                 }
             }
 
@@ -58,7 +59,7 @@
             <div class="patient-display">
 
                 <form method="POST" action="patient-home.php">
-                    <input type="submit" name="register-info" value="register-info"/>
+                    <input type="submit" name="register-info" value="Register Profile"/>
 
                     <?php
                         if(isset($_POST['register-info'])){
@@ -85,6 +86,15 @@
 
                             echo '<label for="gender">  Gender(0=F, 1=M):</label>';
                             echo '<input type="text" name="gender" id="input">';
+
+                            echo "<br><br>";
+
+
+                            echo '<label for="Building Number"> Building Number:</label>';
+                            echo '<input type="text" name="building_number" id="input">';
+
+                            echo '<label for="Direction"> Direction:</label>';
+                            echo '<input type="text" name="direction" id="input">';
 
                             echo '<br><br><label for="street">  Address:</label>';
                             echo '<input type="text" name="street" id="input">';
