@@ -115,6 +115,8 @@
                 echo '</form>';
             } else {
                 echo "No patients scheduled for this time";
+                sleep(5);
+                header("location: nurse-home.php"); 
             }
 
             
@@ -195,6 +197,7 @@
                     if (!$stmt->execute()) {
                         echo "Error updating vaccine's total count: " . $stmt->error;
                     }
+                    header("location: nurse-home.php"); 
                     
                 }
             } else {
