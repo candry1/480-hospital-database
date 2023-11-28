@@ -1,8 +1,7 @@
 <!-- TODO: go through and fix all tag names and variable names so that it matches the file!! (patients not nurses, etc) -->
 <html>
     <head>
-        <!-- <link rel="stylesheet" href="nurse-availability-scheduling.css"> -->
-
+        <link rel="stylesheet" href="patient-vaccination-scheduling.css"> 
         <?php
             session_start();
 
@@ -10,6 +9,7 @@
             $username = "root";
             $password = "";
             $dbname = "final-project-2";
+
 
             $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -44,7 +44,9 @@
 
     <div class="availability-info">
         <?php
+            //$vaccine_name = "" ; 
             if(isset($_POST["schedule-vaccine"])){
+
                 $stmt = "SELECT DISTINCT(the_date) FROM nurse_availability";
                 $result = $conn->query($stmt);
 
@@ -62,8 +64,35 @@
                 } else {
                     echo "No available dates for scheduling!";
                 }
-            }else if(isset($_POST['availability-date-submit'])){
+            }else if(isset($_POST["availability-date-submit"])){
                 $date = $_POST['available_date_option'];
+                
+
+                $stmt = "SELECT vaccine_name FROM vaccine";
+                $result = $conn->query($stmt);
+
+                echo '<h2>Available Vaccines</h2>';
+                echo '<p>Choose one:</p>';
+                if ($result->num_rows > 0) {
+                    echo '<form method="post" action="patient-vaccination-scheduling.php">';
+                    echo '<input type="hidden" name="selected_date" value="' . $date . '">';
+
+                    while($row = $result->fetch_assoc()) {
+                        echo '<input type="radio" name="available_vaccine_option" value="' .  $row["vaccine_name"]. '"> '. $row["vaccine_name"]. '<br><br>';
+                       
+                        //console.log($vaccine_name); 
+                    }
+                    echo '<input type="submit" name="availability-vaccine-submit" id="input">';
+                    
+                    echo '</form>';
+                } else {
+                    echo "No available vaccine for scheduling!";
+                }
+
+            }else if(isset($_POST['availability-vaccine-submit'])){
+                $date = $_POST['selected_date'];
+                $vaccine_name = $_POST['available_vaccine_option']; 
+                echo "$vaccine_name"; 
             
                 //  DONE fix so that we can only sign-up for times where num_of_patients < 100 && num_of_patients < num_of_nurses * 10
                 $stmt = $conn->prepare("SELECT time_slot FROM schedule WHERE the_date = ? AND time_slot not in (SELECT time_slot from patient_vaccination_schedule where the_date = ? and ssn = ?) and num_of_patients < 100 and num_of_patients < num_of_nurses * 10" );
@@ -77,6 +106,7 @@
                 if ($result->num_rows > 0) {
                     echo '<form method="post" action="patient-vaccination-scheduling.php">';
                     echo '<input type="hidden" name="selected_date" value="' . $date . '">';
+                    echo '<input type="hidden" name="selected_vac" value="' . $vaccine_name . '">';
             
                     while($row = $result->fetch_assoc()) {
                         echo '<input type="radio" name="available_time_option" value="' . $row["time_slot"]. '"> '. $row["time_slot"]. '<br><br>';
@@ -90,17 +120,62 @@
             } else if(isset($_POST['availability-time-submit'])){
                 $date = $_POST['selected_date'];
                 $time = $_POST['available_time_option'];
+                $vaccine_name = $_POST['selected_vac']; 
 
-                // TODO: get which vaccine they're signing up for, and add that to the schedule below(vaccine_name)
+                // DONE: get which vaccine they're signing up for, and add that to the schedule below(vaccine_name)
                 // TODO: DONE don't allow them to sign up for a vaccine that isn't available (num_available = 0)
             
-                $stmt = $conn->prepare("INSERT INTO patient_vaccination_schedule (ssn, the_date, time_slot) VALUES (?, ?, ?); Where ( Select num_available from vaccine where num_available >0");
-                $stmt->bind_param("iss", $patient_ssn, $date, $time);
+                //$stmt = $conn->prepare("INSERT INTO patient_vaccination_schedule (ssn, the_date, time_slot) VALUES (?, ?, ?); select num_available from vaccine where num_available >0");
+                //$stmt->bind_param("iss", $patient_ssn, $date, $time);
+                
+                 //$sqlCheckAvailability = "SELECT num_available FROM vaccine WHERE num_available > 0 and vaccine_name = ?";
+
+                 $sqlCheckAvailability = $conn->prepare("SELECT num_available FROM vaccine WHERE num_available > 0 and vaccine_name = ?");
+                $sqlCheckAvailability->bind_param("s", $vaccine_name);
+
+                //$result = $conn->execute($sqlCheckAvailability);
+                 $sqlCheckAvailability->execute();
+                 $result= $sqlCheckAvailability->get_result();
+
             
-                if (!$stmt->execute()) {
-                    echo "Error updating availability: " . $stmt->error;
+                
+                if ($result && $result->num_rows > 0) {
+                    // There are available vaccines, so you can proceed with the INSERT
+                    $sqlInsert = "INSERT INTO patient_vaccination_schedule (ssn, the_date, time_slot,vaccine_name) VALUES (?, ?, ?,?)";
+                
+                    $stmt = $conn->prepare($sqlInsert);
+                    $stmt->bind_param("isss", $patient_ssn, $date, $time,$vaccine_name);
+                    if (!$stmt->execute()) {
+                        echo "Error updating availability: " . $stmt->error;
+                    }
+                        
+                    // $conn->query("UPDATE vaccine SET num_available = num_available - 1  AND num_on_hold = num_on_hold + 1 WHERE num_available > 0 and vaccine_name = ?");
+                    $stmt = $conn->prepare("SELECT num_on_hold,num_available from vaccine where vaccine_name = ? ;");
+                    $stmt->bind_param("s", $vaccine_name);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    
+                    if ($result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
+                        if( $row['num_available'] - 1 < 0){
+                            $num_available = 0;
+                        } else {
+                            $num_available= $row['num_available'] - 1;
+                            $num_on_hold = $row['num_on_hold'] + 1;
+                        }
+
+                    
+                        $stmt = $conn->prepare("UPDATE vaccine set  num_available = ? , num_on_hold = ? where vaccine_name = ?;");
+                        $stmt->bind_param("iis", $num_available,$num_on_hold,$vaccine_name);
+                        $stmt->execute();
+                    }
+
+                }else {
+                    // No available vaccines, handle this situation as needed
+                    echo "No available vaccines.";
                 }
             
+
                 $stmt = $conn->prepare("SELECT num_of_patients from schedule where the_date = ? and time_slot = ?;");
                 $stmt->bind_param("ss", $date, $time);
                 $stmt->execute();
@@ -199,6 +274,7 @@
                     }
                 }
             }
+        
         ?>
     </div>
 </html>
