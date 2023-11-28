@@ -78,50 +78,128 @@
 
             if ($result->num_rows > 0) {
                 echo '<form method="post" action="vaccination_processing.php">';
+                echo '<input type="hidden" name="selected_date" value="' . $date . '">';
 
                 while($row = $result->fetch_assoc()) {
                     $time = $row["time_slot"];
-                    
-                    // TODO: select patient_name, time slot from patient_schedule table where date = date and time = time!!
-                    // TODO: create a vaccination record for them
-                    // TODO: upate "completed" attribute in the patient_vaccination_schedule table for the ssn, date and time!!
-                    // TODO: add nurse eid to patient_vaccination_schedule table for the ssn, date and time
 
-                    // $stmt = "SELECT * FROM schedule WHERE the_date = ?";
-                    // $result = $conn->query($stmt);
-
-                    // if ($result->num_rows > 0) {
-                    //     echo '<form method="post" action="vaccination_processing.php">';
-
-                    //     while($row = $result->fetch_assoc()) {
-                    //         $date = $row["the_date"];
-                    //         $time = $row["time_slot"];
-
-                            echo '<input type="radio" name="vaccination_time_option" value="' .  $time. '"> '. $time. '<br><br>';
-
-                    //         // echo "
-                    //         // <tr>
-                    //         //     <td>" . $row["the_date"]. "</td>
-                    //         //     <td>" . $row["time_slot"]. "</td>
-                    //         // </tr>";
-                    //     }
-                    //     // echo '<input type="submit" name="vaccination_date_submit" id="input">';
-                    //     echo '</form>';
-                    // } else {
-                    //     echo "0 results";
-                    // }
+                    echo '<input type="radio" name="vaccination_time_option" value="' .  $time. '"> '. $time. '<br><br>';
                 }
-
                 echo '<input type="submit" name="vaccination_time_submit" id="input">';
+                echo '</form>';
             } else {
                 echo "No scheduled times found for you on this date";
             }
         } else if(isset($_POST['vaccination_time_submit'])){
-            // TODO: finish this file
-            // based on name and time slot, create a vaccine record
-            // decrease # on-hol
-            // decrease total
-            // mark vaccination as done
+            $time = $_POST['vaccination_time_option'];
+            $date = $_POST["selected_date"];
+
+            echo "<h3>Choose which patient you would like to serve(listed by SSN):</h3>";
+                                
+            $stmt = $conn->prepare("SELECT ssn FROM patient_vaccination_schedule WHERE the_date = ? and time_slot = ?  and completed = 0");
+            $stmt->bind_param("ss", $date, $time);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                echo '<form method="post" action="vaccination_processing.php">';
+                echo '<input type="hidden" name="selected_date" value="' . $date . '">';
+                echo '<input type="hidden" name="selected_time" value="' . $time . '">';
+
+                while($row = $result->fetch_assoc()) {
+                    $patient = $row["ssn"];
+
+                    echo '<input type="radio" name="vaccination_patient_option" value="' .  $patient. '"> '. $patient. '<br><br>';
+                }
+                echo '<input type="submit" name="vaccination_patient_submit" id="input">';
+                echo '</form>';
+            } else {
+                echo "No patients scheduled for this time";
+            }
+
+            
+        } else if(isset($_POST['vaccination_patient_submit'])){
+            $time = $_POST['selected_time'];
+            $date = $_POST["selected_date"];
+            $patient_ssn = $_POST['vaccination_patient_option'];
+
+            $stmt = $conn->prepare("SELECT vaccine_name, vaccine_company, dose_num FROM patient_vaccination_schedule WHERE the_date = ? and time_slot = ? and ssn = ?");
+            $stmt->bind_param("ssi", $date, $time, $patient_ssn);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $vaccine_name = $row["vaccine_name"];
+                    $vaccine_company = $row["vaccine_company"];
+                    $dose_num = $row["dose_num"];
+
+                    // execute vaccinatioon record(works)
+                    $stmt = $conn->prepare("INSERT into vaccine_record (patient_SSN, employee_ID, vaccine_name, the_date, dose_num, time_slot) VALUES (?,?,?,?,?,?)");
+                    $stmt->bind_param("iissis", $patient_ssn, $nurse_eid, $vaccine_name, $date, $dose_num, $time);
+                        
+                    if (!$stmt->execute()) {
+                        echo "Error adding vaccine_record: " . $stmt->error;
+                    }
+
+                    //update "completed" attribute
+                    $stmt = $conn->prepare("UPDATE patient_vaccination_schedule set completed = 1 where ssn = ? and the_date = ? and time_slot = ?");
+                    $stmt->bind_param("iss", $patient_ssn, $date, $time);
+                        
+                    if (!$stmt->execute()) {
+                        echo "Error updating patient's appointment to completed: " . $stmt->error;
+                    }
+
+                    // decrease # on-hol
+                    $stmt = $conn->prepare("SELECT num_on_hold from vaccine where vaccine_name = ? and vaccine_company = ?;");
+                    $stmt->bind_param("ss", $vaccine_name, $vaccine_company);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $num_on_hold = -1;
+                    
+                    if ($result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
+                        if( $row['num_on_hold'] - 1 < 0){
+                            $num_on_hold = 0;
+                        } else {
+                            $num_on_hold = $row['num_on_hold'] - 1;
+                        }
+                    }
+
+                    $stmt = $conn->prepare("UPDATE vaccine set num_on_hold = ? where vaccine_name = ? and vaccine_company = ?");
+                    $stmt->bind_param("iss", $num_on_hold, $vaccine_name, $vaccine_company);
+                        
+                    if (!$stmt->execute()) {
+                        echo "Error updating vaccine's on-hold count: " . $stmt->error;
+                    }
+
+                    // decrease total
+                    $stmt = $conn->prepare("SELECT total_count from vaccine where vaccine_name = ? and vaccine_company = ?;");
+                    $stmt->bind_param("ss", $vaccine_name, $vaccine_company);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $total_count = -1;
+                    
+                    if ($result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
+                        if( $row['total_count'] - 1 < 0){
+                            $total_count = 0;
+                        } else {
+                            $total_count = $row['total_count'] - 1;
+                        }
+                    }
+
+                    $stmt = $conn->prepare("UPDATE vaccine set total_count = ? where vaccine_name = ? and vaccine_company = ?");
+                    $stmt->bind_param("iss", $total_count, $vaccine_name, $vaccine_company);
+                        
+                    if (!$stmt->execute()) {
+                        echo "Error updating vaccine's total count: " . $stmt->error;
+                    }
+                    
+                }
+            } else {
+                echo "No information was foun on this patient";
+            }
         }
     ?>
 </html>
