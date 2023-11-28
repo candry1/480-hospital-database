@@ -148,11 +148,11 @@
                             echo '<input type="radio" name="update_type_nurse" value="MI"> Update Middle Initial <br><br>';
                             echo '<input type="radio" name="update_type_nurse" value="Lname"> Update Last Name<br><br>';
                             echo '<input type="radio" name="update_type_nurse" value="age"> Update Age<br><br>';
-                            echo '<input type="radio" name="update_type_nurse" value="phone_number"> Update Phone Number<br><br>';
+                            // echo '<input type="radio" name="update_type_nurse" value="phone_number"> Update Phone Number<br><br>';
                             echo '<input type="radio" name="update_type_nurse" value="gender"> Update Gender<br><br>';
-                            echo '<input type="radio" name="update_type_nurse" value="street"> Update Address<br><br>';
-                            echo '<input type="radio" name="update_type_nurse" value="city"> Update City<br><br>';
-                            echo '<input type="radio" name="update_type_nurse" value="state"> Update State<br><br>';
+                            // echo '<input type="radio" name="update_type_nurse" value="street"> Update Address<br><br>';
+                            // echo '<input type="radio" name="update_type_nurse" value="city"> Update City<br><br>';
+                            // echo '<input type="radio" name="update_type_nurse" value="state"> Update State<br><br>';
                             echo '<input type="radio" name="update_type_nurse" value="user_name"> Update Username<br><br>';
                             echo '<input type="radio" name="update_type_nurse" value="pass_word"> Update Password<br><br>';
 
@@ -168,7 +168,7 @@
                             $column = $_POST['update_type_nurse'];
                             $value = $_POST['update-info'];
 
-                            if($_POST['update_type_nurse'] == "age" || $_POST['update_type_nurse'] == "phone_number" || $_POST['update_type_nurse'] == "gender"){
+                            if($_POST['update_type_nurse'] == "age" || $_POST['update_type_nurse'] == "gender"){
                                 $stmt = $conn->prepare("UPDATE nurse SET $column = ? WHERE eid = ?");
                                 $stmt->bind_param("ii", $value, $eid);
                             } else if($_POST['update_type_nurse'] == "pass_word" ){
@@ -387,16 +387,19 @@
                         <th>Date</th>
                         <th>Time Slot</th>
                         <th>Vaccine</th>
+                        <th>Company</th>
                         <th>Dosage Number</th>
+                        <th>Completed?</th>
+                        <th>EID of Vaccinating Nurse</th>
                     </tr>
                     <?php
-                    $stmt = "SELECT * FROM vaccine_record";
+                    $stmt = "SELECT * FROM patient_vaccination_schedule";
                     $result = $conn->query($stmt);
 
                     if ($result->num_rows > 0) {
                         while($row = $result->fetch_assoc()) {
                             $stmt_password = $conn->prepare("SELECT Fname, Lname FROM patient where ssn = ?");
-                            $stmt_password->bind_param("i", $row["patient_SSN"]);
+                            $stmt_password->bind_param("i", $row["ssn"]);
                             $stmt_password->execute();
                             $result_password = $stmt_password->get_result();
                             $password_placement = "";
@@ -408,14 +411,29 @@
                                 $last_name = $password_row["Lname"];
                             }
 
+                            $stmt_grab_vaccination_scheule_info = $conn->prepare("SELECT completed, nurse_eid FROM patient_vaccination_schedule where ssn = ? and the_date = ? and time_slot = ?");
+                            $stmt_grab_vaccination_scheule_info->bind_param("iss", $row["ssn"], $row["the_date"], $row["time_slot"]);
+                            $stmt_grab_vaccination_scheule_info->execute();
+                            $result = $stmt_grab_vaccination_scheule_info->get_result();
+                    
+                            if ($result->num_rows > 0) {
+                                $info_row = $result->fetch_assoc();
+
+                                $completed = $info_row["completed"];
+                                $nurse_eid_completed = $info_row["nurse_eid"];
+                            }
+
                             echo "
                             <tr>
                                 <td>" . $first_name. " " .$last_name. "</td>
-                                <td>" . $row["patient_SSN"]. "</td>
+                                <td>" . $row["ssn"]. "</td>
                                 <td>" . $row["the_date"].  "</td>
                                 <td>" . $row["time_slot"]. "</td>
                                 <td>" . $row["vaccine_name"]. "</td>
+                                <td>" . $row["vaccine_company"]. "</td>
                                 <td>" . $row["dose_num"]. "</td>
+                                <td>" . $completed. "</td>
+                                <td>" . $nurse_eid_completed. "</td>
                             </tr>";
                         }
                     } else {
