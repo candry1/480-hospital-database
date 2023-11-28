@@ -49,6 +49,7 @@
 
                 echo '<h2>Available Dates</h2>';
                 echo "<a href='http://localhost/480-hospital-database'>Log Out</a><br><br>";
+                echo "<a href='http://localhost/480-hospital-database/nurse-home.php'>Home</a><br><br>";
                 echo '<p>Choose a date to schedule yourself for:</p>';
 
                 if ($result->num_rows > 0) {
@@ -73,6 +74,7 @@
             
                 echo '<h2>Available Timeslots</h2>';
                 echo "<a href='http://localhost/480-hospital-database'>Log Out</a><br><br>";
+                echo "<a href='http://localhost/480-hospital-database/nurse-home.php'>Home</a><br><br>";
                 echo '<p>Choose a time to schedule yourself for. If you need more than one, redo the form:</p>';
             
                 if ($result->num_rows > 0) {
@@ -124,6 +126,7 @@
 
                 echo '<h2>Scheduled Times</h2>';
                 echo "<a href='http://localhost/480-hospital-database'>Log Out</a><br><br>";
+                echo "<a href='http://localhost/480-hospital-database/nurse-home.php'>Home</a><br><br>";
                 echo '<p>Choose a date to delete from your schedule:</p>';
 
                 if ($result->num_rows > 0) {
@@ -147,6 +150,7 @@
             
                 echo '<br><br><h2>Timeslots to delete</h2>';
                 echo "<a href='http://localhost/480-hospital-database'>Log Out</a><br><br>";
+                echo "<a href='http://localhost/480-hospital-database/nurse-home.php'>Home</a><br><br>";
                 echo '<p>Choose a time to schedule yourself for. If you need more than one, redo the form:</p>';
             
                 if ($result->num_rows > 0) {

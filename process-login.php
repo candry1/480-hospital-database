@@ -47,7 +47,7 @@
                 } else{
                     
                     echo "Wrong Password or Username" ; 
-                    sleep(5) ; 
+                    sleep(2) ; 
                     header("Location: index.html");
                 }
             } else {

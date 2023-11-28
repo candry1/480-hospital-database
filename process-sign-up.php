@@ -29,7 +29,7 @@
             echo "<br>";
             echo "Sign-up of = $user_name is successfull, please log in!";
             echo "You will be redirected to the log in page ..."; 
-            sleep(5); 
+            sleep(2); 
             header("Location: index.html");
         } else {
             echo "Error adding a new user " . $stmt->error;

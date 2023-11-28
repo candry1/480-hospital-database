@@ -51,7 +51,7 @@
     <div class="patient-home-page">
         <div class="tab-bar">
             <?php echo "<h1>Welcome, $patient_name!</h1>"?>
-            <a href='http://localhost/480-hospital-database'>Log Out</a>
+            <a href='http://localhost/480-hospital-database' style="color: #fff;">Log Out</a>
             <br>
             <br>
             <br>

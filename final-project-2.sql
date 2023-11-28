@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2023 at 05:26 PM
+-- Generation Time: Nov 28, 2023 at 06:27 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -66,7 +66,8 @@ INSERT INTO `login_table` (`user_name`, `Email`, `pass_word`, `user_type`) VALUE
 ('mward', '', 'test2244', 2),
 ('nnursee', 'nnursee@gmail.com', 'nnursee', 2),
 ('rwilson123', 'rwilson123@gmail.com', 'rwilson123', 1),
-('test12', 'ssmith_nurse@gmail.com', 'test12', 2);
+('test12', 'ssmith_nurse@gmail.com', 'test12', 2),
+('woohoo', 'woohoo@gmail.com', 'woohoo', 1);
 
 -- --------------------------------------------------------
 
@@ -216,7 +217,13 @@ CREATE TABLE `patient_vaccination_schedule` (
 --
 
 INSERT INTO `patient_vaccination_schedule` (`ssn`, `the_date`, `time_slot`, `vaccine_company`, `vaccine_name`, `dose_num`, `completed`, `nurse_eid`) VALUES
-(1, '12/01/2023', '9:00am', 'AstraZeneca', 'Flu', 1, 1, -1);
+(1, '12/01/2023', '9:00am', 'AstraZeneca', 'Flu', 1, 1, 10),
+(5, '12/01/2023', '1:00pm', '', 'Yellow Fever', 0, 0, 0),
+(5, '12/01/2023', '9:00am', '', 'Hepatitis B', 0, 0, 0),
+(5, '12/01/2023', '8:00am', '', 'Polio', 0, 0, 0),
+(5, '12/01/2023', '12:00pm', '', 'Hepatitis A', 0, 0, 0),
+(5, '12/01/2023', '11:00am', '', 'COVID-19', 0, 0, 0),
+(5, '12/01/2023', '3:00pm', '', 'TEST', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -237,15 +244,15 @@ CREATE TABLE `schedule` (
 
 INSERT INTO `schedule` (`the_date`, `time_slot`, `num_of_nurses`, `num_of_patients`) VALUES
 ('12/01/2023', '10:00am', 2, 1),
-('12/01/2023', '11:00am', 2, 1),
-('12/01/2023', '12:00pm', 1, 1),
-('12/01/2023', '1:00pm', 2, 1),
+('12/01/2023', '11:00am', 2, 2),
+('12/01/2023', '12:00pm', 1, 2),
+('12/01/2023', '1:00pm', 2, 2),
 ('12/01/2023', '2:00pm', 1, 1),
-('12/01/2023', '3:00pm', 1, 1),
+('12/01/2023', '3:00pm', 1, 2),
 ('12/01/2023', '4:00pm', 1, 1),
 ('12/01/2023', '5:00pm', 1, 1),
 ('12/01/2023', '6:00pm', 1, 0),
-('12/01/2023', '8:00am', 1, 1),
+('12/01/2023', '8:00am', 1, 2),
 ('12/01/2023', '9:00am', 12, 1);
 
 -- --------------------------------------------------------
@@ -270,17 +277,16 @@ CREATE TABLE `vaccine` (
 
 INSERT INTO `vaccine` (`vaccine_name`, `vaccine_company`, `num_dose`, `total_count`, `num_available`, `num_on_hold`, `text_desc`) VALUES
 ('covid-19 vaccine', 'Pfiser', 2, 1000, 500, 0, 'this vaccine is for covid-19'),
-('COVID-19', 'Pfizer', 2, 10000, 9500, 500, 'COVID-19 vaccine produced by Pfizer'),
-('COVID-19', 'Moderna', 2, 100, 100, 0, 'COVID-19 vaccine produced by Moderna'),
-('Flu', 'AstraZeneca', 1, 4999, 4800, 199, 'Influenza vaccine produced by AstraZeneca'),
-('Hepatitis B', 'GSK', 3, 3000, 2800, 200, 'Hepatitis B vaccine produced by GSK'),
+('COVID19-Moderna', 'Moderna', 2, 100, 100, 0, 'COVID-19 vaccine produced by Moderna'),
+('Flu', 'AstraZeneca', 1, 4998, 4800, 198, 'Influenza vaccine produced by AstraZeneca'),
+('Hepatitis B', 'GSK', 3, 3000, 2799, 201, 'Hepatitis B vaccine produced by GSK'),
 ('Measles-Mumps-Rubella', 'Merck', 2, 6000, 5900, 100, 'MMR vaccine produced by Merck'),
-('Polio', 'Sanofi', 1, 4000, 3950, 50, 'Polio vaccine produced by Sanofi'),
+('Polio', 'Sanofi', 1, 4000, 3949, 51, 'Polio vaccine produced by Sanofi'),
 ('Tetanus-Diphtheria', 'Johnson & Johnson', 1, 2000, 1900, 100, 'Tetanus-Diphtheria vaccine produced by Johnson & Johnson'),
-('COVID-19', 'Johnson & Johnson', 1, 6000, 5900, 100, 'COVID-19 vaccine produced by Johnson & Johnson'),
-('Hepatitis A', 'GSK', 2, 3000, 2800, 200, 'Hepatitis A vaccine produced by GSK'),
-('Yellow Fever', 'Sanofi', 1, 1000, 950, 50, 'Yellow Fever vaccine produced by Sanofi'),
-('TEST', 'TEST', 3, 150, 100, 50, 'TEST');
+('COVID-19', 'Johnson & Johnson', 1, 6000, 5899, 101, 'COVID-19 vaccine produced by Johnson & Johnson'),
+('Hepatitis A', 'GSK', 2, 3000, 2799, 201, 'Hepatitis A vaccine produced by GSK'),
+('Yellow Fever', 'Sanofi', 1, 1000, 949, 51, 'Yellow Fever vaccine produced by Sanofi'),
+('TEST', 'TEST', 3, 150, 99, 51, 'TEST');
 
 -- --------------------------------------------------------
 

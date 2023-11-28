@@ -42,6 +42,9 @@
     </head>
 
     <h1>Vaccinations To Complete</h1>
+    <a href='http://localhost/480-hospital-database'>Log Out</a>
+    <br>
+    <a href='http://localhost/480-hospital-database/nurse-home.php'>Home</a>
     <br>
     <?php
         
@@ -142,12 +145,42 @@
                         echo "Error adding vaccine_record: " . $stmt->error;
                     }
 
+                    //update "num_patients" attribute in schedule
+                    $stmt = $conn->prepare("SELECT num_of_patients from schedule where the_date = ? and time_slot = ?;");
+                    $stmt->bind_param("ss", $date, $time);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    
+                    if ($result->num_rows > 0) {
+                        $row = $result->fetch_assoc();
+                        if( $row['num_of_patients'] - 1 < 0){
+                            $num_of_patients = 0;
+                        } else {
+                            $num_of_patients = $row['num_of_patients'] - 1;
+                        }
+    
+                        $stmt = $conn->prepare("UPDATE schedule set num_of_patients = ? where the_date = ? and time_slot = ?;");
+                        $stmt->bind_param("iss", $num_of_patients, $date, $time);
+    
+                        if (!$stmt->execute()) {
+                            echo "Error decreasing num_of_patients count: " . $stmt->error;
+                        }
+                    }
+
                     //update "completed" attribute
                     $stmt = $conn->prepare("UPDATE patient_vaccination_schedule set completed = 1 where ssn = ? and the_date = ? and time_slot = ?");
                     $stmt->bind_param("iss", $patient_ssn, $date, $time);
                         
                     if (!$stmt->execute()) {
                         echo "Error updating patient's appointment to completed: " . $stmt->error;
+                    }
+
+                    //update "nurse_eid" attribute in this table
+                    $stmt = $conn->prepare("UPDATE patient_vaccination_schedule set nurse_eid = ? where ssn = ? and the_date = ? and time_slot = ?");
+                    $stmt->bind_param("iiss", $nurse_eid, $patient_ssn, $date, $time);
+                        
+                    if (!$stmt->execute()) {
+                        echo "Error adding nurse_eid to table: " . $stmt->error;
                     }
 
                     // decrease # on-hol
@@ -195,6 +228,11 @@
                     if (!$stmt->execute()) {
                         echo "Error updating vaccine's total count: " . $stmt->error;
                     }
+
+                    // not displaying words
+                    echo "<p>You successfully completed a vaccine! Redirecting you home..</p>";
+                    sleep(2) ; 
+                    header("Location: nurse-home.php");
                     
                 }
             } else {
