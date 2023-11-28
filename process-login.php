@@ -45,11 +45,15 @@
                         header("Location: patient-home.php");
                     }
                 } else{
-                    // TODO: (IF WE HAVE TIME) print "incorrect password or user type"
+                    // TODO:DONE (IF WE HAVE TIME) print "incorrect password or user type"
+                    echo "Wrong Password or Username" ; 
+                    sleep(5) ; 
                     header("Location: index.html");
                 }
             } else {
-                echo "0 results";
+                echo "Wrong Password or Username" ; 
+                //sleep(5) ; 
+                header("Location: index.html");
             }
 
             $stmt->close();

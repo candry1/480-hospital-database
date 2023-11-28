@@ -65,9 +65,8 @@
             }else if(isset($_POST['availability-date-submit'])){
                 $date = $_POST['available_date_option'];
             
-                // TODO: fix so that we can only sign-up for times nurses are available(num_of_nurses > 0) 
-                // TODO: fix so that we can only sign-up for times where num_of_patients < 100 && num_of_patients < num_of_nurses * 10
-                $stmt = $conn->prepare("SELECT time_slot FROM schedule WHERE the_date = ? AND time_slot not in (SELECT time_slot from patient_vaccination_schedule where the_date = ? and ssn = ?)");
+                // TODO: DONE fix so that we can only sign-up for times where num_of_patients < 100 && num_of_patients < num_of_nurses * 10
+                $stmt = $conn->prepare("SELECT time_slot FROM schedule WHERE the_date = ? AND time_slot not in (SELECT time_slot from patient_vaccination_schedule where the_date = ? and ssn = ?) and num_of_patients < 100 and num_of_patients < num_of_nurses * 10" );
                 $stmt->bind_param("ssi", $date, $date, $patient_ssn);
                 $stmt->execute();
                 $result = $stmt->get_result();
