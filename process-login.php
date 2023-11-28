@@ -45,7 +45,7 @@
                         header("Location: patient-home.php");
                     }
                 } else{
-                    // TODO:DONE (IF WE HAVE TIME) print "incorrect password or user type"
+                    
                     echo "Wrong Password or Username" ; 
                     sleep(5) ; 
                     header("Location: index.html");

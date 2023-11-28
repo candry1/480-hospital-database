@@ -65,7 +65,7 @@
             }else if(isset($_POST['availability-date-submit'])){
                 $date = $_POST['available_date_option'];
             
-                // TODO: DONE fix so that we can only sign-up for times where num_of_patients < 100 && num_of_patients < num_of_nurses * 10
+                //  DONE fix so that we can only sign-up for times where num_of_patients < 100 && num_of_patients < num_of_nurses * 10
                 $stmt = $conn->prepare("SELECT time_slot FROM schedule WHERE the_date = ? AND time_slot not in (SELECT time_slot from patient_vaccination_schedule where the_date = ? and ssn = ?) and num_of_patients < 100 and num_of_patients < num_of_nurses * 10" );
                 $stmt->bind_param("ssi", $date, $date, $patient_ssn);
                 $stmt->execute();
@@ -92,9 +92,9 @@
                 $time = $_POST['available_time_option'];
 
                 // TODO: get which vaccine they're signing up for, and add that to the schedule below(vaccine_name)
-                // TODO: don't allow them to sign up for a vaccine that isn't available (num_available = 0)
+                // TODO: DONE don't allow them to sign up for a vaccine that isn't available (num_available = 0)
             
-                $stmt = $conn->prepare("INSERT INTO patient_vaccination_schedule (ssn, the_date, time_slot) VALUES (?, ?, ?);");
+                $stmt = $conn->prepare("INSERT INTO patient_vaccination_schedule (ssn, the_date, time_slot) VALUES (?, ?, ?); Where ( Select num_available from vaccine where num_available >0");
                 $stmt->bind_param("iss", $patient_ssn, $date, $time);
             
                 if (!$stmt->execute()) {
