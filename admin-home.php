@@ -193,7 +193,7 @@
                         
                                     if ($result->num_rows > 0) {
                                         $row = $result->fetch_assoc();
-                                        $new_user_name = $value;        //input
+                                        $new_user_name = $value;
                                         $old_user_name = $row["user_name"];
 
                                         echo "<p>updating $old_user_name to $new_user_name<p>";
@@ -509,7 +509,6 @@
                             $value = $_POST['updated-value'];
 
 
-                            // TODO: add ability to update userame && password
                             $stmt = $conn->prepare("UPDATE vaccine SET $update_column = ? WHERE vaccine_name like ? AND vaccine_company like ?");
                             if($update_column == "text_desc"){
                                 $stmt->bind_param("sss", $value, $vaccine_name, $vaccine_company);

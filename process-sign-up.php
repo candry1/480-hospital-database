@@ -1,11 +1,9 @@
 <html>
     <body>
         <?php
-        //add them as a user and send them to the login page!
         include('signup.html');
 
 
-        // testing connection
         $servername = "localhost";
         $username = "root";
         $password = "";
@@ -33,8 +31,6 @@
             echo "You will be redirected to the log in page ..."; 
             sleep(20); 
             header("Location: index.html");
-            // TODO: add header() here to redirect them. ** doing this wont 
-            // show the "success" message
         } else {
             echo "Error adding a new user " . $stmt->error;
         }

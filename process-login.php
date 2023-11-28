@@ -29,7 +29,6 @@
                     if($_POST["login_type"] == "3"){
                         header("Location: admin-home.php");
                     } else if($_POST["login_type"] == "2"){
-                        //try it out
                         session_start();
 
                         $username = $user_name;
@@ -46,7 +45,7 @@
                         header("Location: patient-home.php");
                     }
                 } else{
-                    // TODO: print "incorrect password or user type"
+                    // TODO: (IF WE HAVE TIME) print "incorrect password or user type"
                     header("Location: index.html");
                 }
             } else {

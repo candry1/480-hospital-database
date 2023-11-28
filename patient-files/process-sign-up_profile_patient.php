@@ -3,9 +3,6 @@
 <html>
     <body>
         <?php
-        //add them as a user and send them to the login page!
-
-        // testing connection
         $servername = "localhost";
         $username = "root";
         $password = "";

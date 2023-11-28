@@ -83,6 +83,9 @@
                     $time = $row["time_slot"];
                     
                     // TODO: select patient_name, time slot from patient_schedule table where date = date and time = time!!
+                    // TODO: create a vaccination record for them
+                    // TODO: upate "completed" attribute in the patient_vaccination_schedule table for the ssn, date and time!!
+                    // TODO: add nurse eid to patient_vaccination_schedule table for the ssn, date and time
 
                     // $stmt = "SELECT * FROM schedule WHERE the_date = ?";
                     // $result = $conn->query($stmt);
@@ -114,11 +117,11 @@
                 echo "No scheduled times found for you on this date";
             }
         } else if(isset($_POST['vaccination_time_submit'])){
+            // TODO: finish this file
             // based on name and time slot, create a vaccine record
             // decrease # on-hol
             // decrease total
             // mark vaccination as done
-            //
         }
     ?>
 </html>

@@ -52,7 +52,9 @@
         <div class="tab-bar">
             <?php echo "<h1>Welcome, $patient_name!</h1>"?>
             <a href='http://localhost/480-hospital-database'>Log Out</a>
-
+            <br>
+            <br>
+            <br>
         </div>
 
         <div class="display-options">
@@ -152,6 +154,41 @@
                 </table>
                 <br>
                 <br>
+
+
+
+
+                <h2>Your Scheduled Vaccines</h2>
+                <form method="POST" action="patient-vaccination-scheduling.php">
+                    <input type="submit" name="schedule-vaccine" value="Schedule A Vaccine Appointment"/>
+                    <input type="submit" name="cancel-vaccine" value="Cancel A Vaccine Appointment"/>
+                </form>
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Completed?(0=no, 1=yes)</th>
+                        <th>Vaccination Nurse's EID</th>
+                    </tr>
+                    <?php
+                    $stmt = "SELECT * FROM patient_vaccination_schedule WHERE ssn = $patient_ssn";
+                    $result = $conn->query($stmt);
+
+                    if ($result->num_rows > 0) {
+                        while($row = $result->fetch_assoc()) {
+                            echo "
+                            <tr>
+                                <td>" . $row["the_date"]."</td>
+                                <td>" . $row["time_slot"]. "</td>
+                                <td>" . $row["completed"]. "</td>
+                                <td>" . $row["nurse_eid"]. "</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "0 results";
+                    }
+                    ?>
+                </table>
                 <br>
             </div>
 
