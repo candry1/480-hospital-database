@@ -83,3 +83,11 @@ a {
 a:hover {
     color: #216a94;
 }
+
+/* Additional styles for vaccine scheduling section */
+h2 {
+    color: #4CAF50; /* Green color theme */
+    margin-top: 20px;
+}
+
+/* Adjust styling as needed */

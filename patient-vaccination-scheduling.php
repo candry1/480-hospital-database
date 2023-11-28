@@ -1,7 +1,7 @@
 <!-- TODO: go through and fix all tag names and variable names so that it matches the file!! (patients not nurses, etc) -->
 <html>
     <head>
-        <!-- <link rel="stylesheet" href="nurse-availability-scheduling.css"> -->
+        <link rel="stylesheet" href="patient-vaccination-scheduling.css"> 
 
         <?php
             session_start();
