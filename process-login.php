@@ -43,7 +43,7 @@
                         $username = $user_name;
                         $_SESSION['username'] = $username;
 
-                        header("Location: patient-files/patient-home.php");
+                        header("Location: patient-home.php");
                     }
                 } else{
                     // TODO: print "incorrect password or user type"
