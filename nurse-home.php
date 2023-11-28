@@ -144,6 +144,7 @@
                     <tr>
                         <th>Date</th>
                         <th>Timeslot</th>
+                         
                         <th>Number of Nurses Available</th>
                         <th>Number of Patients Scheuled</th>
                     </tr>

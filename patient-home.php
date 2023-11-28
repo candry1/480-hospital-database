@@ -169,6 +169,8 @@
                         <th>Time</th>
                         <th>Completed?(0=no, 1=yes)</th>
                         <th>Vaccination Nurse's EID</th>
+                        <th> Vaccine Name </th>
+
                     </tr>
                     <?php
                     $stmt = "SELECT * FROM patient_vaccination_schedule WHERE ssn = $patient_ssn";
@@ -182,6 +184,7 @@
                                 <td>" . $row["time_slot"]. "</td>
                                 <td>" . $row["completed"]. "</td>
                                 <td>" . $row["nurse_eid"]. "</td>
+                                <td>" . $row["vaccine_name"]. "</td>
                             </tr>";
                         }
                     } else {
