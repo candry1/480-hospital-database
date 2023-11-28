@@ -95,7 +95,7 @@
                 $vaccine_name = $_POST['available_vaccine_option']; 
                 echo "$vaccine_name"; 
             
-                //  DONE fix so that we can only sign-up for times where num_of_patients < 100 && num_of_patients < num_of_nurses * 10
+                //this works bc we tested it on num_of_patients < 1, and only 1 time slot showed where the num_of_patients was 0. should also work with 100
                 $stmt = $conn->prepare("SELECT time_slot FROM schedule WHERE the_date = ? AND time_slot not in (SELECT time_slot from patient_vaccination_schedule where the_date = ? and ssn = ?) and num_of_patients < 100 and num_of_patients < num_of_nurses * 10" );
                 $stmt->bind_param("ssi", $date, $date, $patient_ssn);
                 $stmt->execute();

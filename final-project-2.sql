@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2023 at 06:27 PM
+-- Generation Time: Nov 28, 2023 at 07:05 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -61,8 +61,8 @@ INSERT INTO `login_table` (`user_name`, `Email`, `pass_word`, `user_type`) VALUE
 ('ka_nurse', 'ka_nurse@gmail.com', 'ka_nurse', 2),
 ('lsmith123', 'lsmith123@gmail.com', 'lsmith123', 1),
 ('lsmith_nurse', 'lsmith_nurse@gmail.com', 'lsmith_nurse', 2),
-('msmith123', 'msmith123@gmail.com', 'msmith123\n', 1),
-('msmith_nurse', 'msmith_nurse@gmail.com', 'msmith_nurse\n', 2),
+('msmith123', 'msmith123@gmail.com', 'msmith123', 1),
+('msmith_nurse', 'msmith_nurse@gmail.com', 'msmith_nurse', 2),
 ('mward', '', 'test2244', 2),
 ('nnursee', 'nnursee@gmail.com', 'nnursee', 2),
 ('rwilson123', 'rwilson123@gmail.com', 'rwilson123', 1),
@@ -130,7 +130,6 @@ INSERT INTO `nurse_availability` (`eid`, `the_date`, `time_slot`) VALUES
 (4, '12/01/2023', '9:00am'),
 (5, '12/01/2023', '10:00am'),
 (5, '12/01/2023', '11:00am'),
-(5, '12/01/2023', '12:00pm'),
 (5, '12/01/2023', '1:00pm'),
 (5, '12/01/2023', '2:00pm'),
 (5, '12/01/2023', '3:00pm'),
@@ -245,7 +244,7 @@ CREATE TABLE `schedule` (
 INSERT INTO `schedule` (`the_date`, `time_slot`, `num_of_nurses`, `num_of_patients`) VALUES
 ('12/01/2023', '10:00am', 2, 1),
 ('12/01/2023', '11:00am', 2, 2),
-('12/01/2023', '12:00pm', 1, 2),
+('12/01/2023', '12:00pm', 0, 2),
 ('12/01/2023', '1:00pm', 2, 2),
 ('12/01/2023', '2:00pm', 1, 1),
 ('12/01/2023', '3:00pm', 1, 2),
@@ -276,7 +275,7 @@ CREATE TABLE `vaccine` (
 --
 
 INSERT INTO `vaccine` (`vaccine_name`, `vaccine_company`, `num_dose`, `total_count`, `num_available`, `num_on_hold`, `text_desc`) VALUES
-('covid-19 vaccine', 'Pfiser', 2, 1000, 500, 0, 'this vaccine is for covid-19'),
+('covid-19 vaccine', 'Pfiser', 2, 1000, 1000, 0, 'this vaccine is for covid-19'),
 ('COVID19-Moderna', 'Moderna', 2, 100, 100, 0, 'COVID-19 vaccine produced by Moderna'),
 ('Flu', 'AstraZeneca', 1, 4998, 4800, 198, 'Influenza vaccine produced by AstraZeneca'),
 ('Hepatitis B', 'GSK', 3, 3000, 2799, 201, 'Hepatitis B vaccine produced by GSK'),
